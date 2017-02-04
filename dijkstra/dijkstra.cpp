@@ -50,18 +50,21 @@ void Dijkstra(graph *G, int s, int *dist)
 
 int main()
 {
-  int s=1;//始点
   int i;
   int *dist;
   graph *G=graph_input();
   int n=G->n;
   dist=(int*)malloc((n+1)*sizeof(int));
 
-  Dijkstra(G,s,dist);
 
+  printf("%d\n",n);
   for(i=1;i<=n;i++)
   {
-   printf("%d %d\n",i,dist[i]);
+   Dijkstra(G,i,dist);
+   for (size_t j = 1; j <= n; j++) {
+       printf("%d ",dist[j]);
+   }
+   printf("\n");
   }
 
  return 0;
