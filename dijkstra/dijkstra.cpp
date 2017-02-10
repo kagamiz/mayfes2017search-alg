@@ -66,6 +66,6 @@ int main()
    }
    printf("\n");
   }
-
+  free(dist);
  return 0;
 }
