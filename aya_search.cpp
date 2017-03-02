@@ -13,41 +13,51 @@ using namespace std;
 
 #define INFINITY 99999999
 
-/* 全順列から重み最小の並びを探す */
-int *all_permutation_search(int size, double **dm, int *vertex)
+bool valid(int size, int *start, int *timelength, int **dm, int *index)
 {
-	int i, j;
-	double d, min;
+	int i, nowplace, nextplace, nowtime, nexttime, dl;
+	nowtime = start[0];
+	nowplace = 0;
+	for(i = 0; i < size; i++)
+	{
+		nextplace = index[i];
+		nexttime = nowtime + dm[nowplace][nextplace];
+		dl = start[nextplace];
+		if(dl != -1 && dl < nexttime) return false;
+		else{
+			nowplace = nextplace;
+			nowtime = max(nexttime, dl) + timelength[nextplace];
+		}
+	}
+	return true;
+}
+
+/* 全順列から重み最小の並びを探す */
+int *all_permutation_search(int size, int *start, int *timelength, int **dm)
+{
+	int d, i, j, min;
 
 	min = INFINITY;
 
 	int *index = 0;
 	index = new int[size];
-	for(i = 0; i < size; i++)
-	{
-			index[i] = i;
-	}
-	// 配列0,...,n-1を作成
+	for(i = 0; i < size; i++) index[i] = i + 1;	// 配列 1,...,n を作成
 
-	int *vertex_min = 0; // 重み最小の順列を保存する配列
-	vertex_min = new int[size];
+	int *index_min = 0;	// 重み最小の順列を保存する配列
+	index_min = new int[size];
+	index_min[0] = -1;
 
 	do
 	{
-		d = 0.0;
-		for(i = 1; i < size; i++)
+		if(valid(size, start, timelength, dm, index))
 		{
-			d += dm[index[i - 1]][index[i]];
-		}
-		// 2頂点間の重みを足す
-		if(d < min)
-		{
-			min = d; // 最小値を更新
-			for(j = 0; j < size; j++)
+			d = dm[0][index[0]];
+			for(i = 1; i < size; i++) d += dm[index[i - 1]][index[i]];			// 2頂点間の重みを足す
+			if(d < min)
 			{
-				vertex_min[j] = vertex[index[j]];
+				min = d; // 最小値を更新
+				for(j = 0; j < size; j++) index_min[j] = index[j];						// 重み最小の順列を保存
 			}
-			// 重み最小の順列を保存
 		}
 	}
 	while(next_permutation(index, index + size));
@@ -55,5 +65,5 @@ int *all_permutation_search(int size, double **dm, int *vertex)
 
 	delete[] index;
 
-	return vertex_min;
+	return index_min;
 }
