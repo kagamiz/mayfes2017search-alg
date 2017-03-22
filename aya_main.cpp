@@ -30,9 +30,11 @@ int main()
 	s = new int[n + 1];
 	t = new int[n + 1];
 	cin >> v[0];	// 入力（始点）
-	s[0] = local -> tm_hour * 60 + local -> tm_min;	// 現在時刻
+	cin >> s[0];	// 開始時刻
+//	s[0] = local -> tm_hour * 60 + local -> tm_min;
+	cin >> t[0];	// 終了時刻
+//	t[0] = 0;
 
-	t[0] = 0;
 	for(i = 1; i <= n; i++)
 	{
 		cin >> x >> y >> z;	// 入力（頂点番号, 到着したい時刻, 費やす時間）
