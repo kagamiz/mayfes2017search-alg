@@ -29,7 +29,8 @@ bool valid(int size, int *start, int *timelength, int **dm, int *index)
 			nowtime = max(nexttime, dl) + timelength[nextplace];
 		}
 	}
-	return true;
+	if(nowtime > timelength[0]) return false;
+	else return true;
 }
 
 /* 全順列から重み最小の並びを探す */
@@ -52,11 +53,13 @@ int *all_permutation_search(int size, int *start, int *timelength, int **dm)
 		if(valid(size, start, timelength, dm, index))
 		{
 			d = dm[0][index[0]];
-			for(i = 1; i < size; i++) d += dm[index[i - 1]][index[i]];			// 2頂点間の重みを足す
+			for(i = 1; i < size; i++) d += dm[index[i - 1]][index[i]];
+			// 2頂点間の重みを足す
 			if(d < min)
 			{
 				min = d; // 最小値を更新
-				for(j = 0; j < size; j++) index_min[j] = index[j];						// 重み最小の順列を保存
+				for(j = 0; j < size; j++) index_min[j] = index[j];
+				// 重み最小の順列を保存
 			}
 		}
 	}
