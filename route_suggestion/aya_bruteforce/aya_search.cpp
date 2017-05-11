@@ -65,12 +65,12 @@ bool valid(int size, int *index, int number, int *order)
 	return false;
 }
 
-int *shortageoftime(int size, int *start, int *timelength, int **distancematrix)
+int *shortageoftime(int size, int *start, int *end, int *timelength, int **distancematrix)
 {
 	int i, j, l, d_ij, d_min_max, d_min_sub, d_sum_sub, t_sum;
 	t_sum = 0;
 	for (i = 1; i <= size;  i++) t_sum += timelength[i];
-	l = start[0] + t_sum - timelength[0];
+	l = start[0] + t_sum - end[0];
 	d_min_max = 0;
 	int *d_min = 0;
 	d_min = new int[size + 1];
@@ -115,7 +115,7 @@ int *all_permutation_search(int size, int *start, int *end, int *timelength, int
 	insertionsort_starttime(order, m, start);
 
 	int *st = 0;
-	st = shortageoftime(size, start, timelength, distancematrix);
+	st = shortageoftime(size, start, end, timelength, distancematrix);
 
 	if(st[0] <= 0)
 	{
@@ -150,7 +150,7 @@ int *all_permutation_search(int size, int *start, int *end, int *timelength, int
 				nowplace = nextplace;
 				nowtime = max(nexttime, deadline) + timelength[nextplace];
 			}
-			if (d < min && nowtime <= timelength[0])
+			if (d < min && nowtime <= end[0])
 			{
 				min = d; // 最小値を更新
 				for (j = 0; j < size; j++) index_min[j] = index[j]; // 重み最小の順列を保存
