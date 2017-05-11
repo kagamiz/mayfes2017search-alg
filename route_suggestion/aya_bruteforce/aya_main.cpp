@@ -20,7 +20,7 @@ int main()
 
 	int *v = 0;	// 頂点番号の配列
 	int *s = 0;	// 到着したい時刻
-	int *e = 0;	// 費やす時間
+	int *e = 0;	// 企画終了時刻
 	int *t = 0;	// 費やす時間
 	v = new int[n + 1];
 	s = new int[n + 1];
@@ -28,8 +28,8 @@ int main()
 	t = new int[n + 1];
 	cin >> v[0];	// 入力（始点）
 	cin >> s[0];	// 開始時刻
-	cin >> e[0];	// 特に使わない
-	cin >> t[0];	// 終了時刻
+	cin >> e[0];	// 帰る時刻
+	cin >> t[0];	// 特に使わない
 
 
 	for(i = 1; i <= n; i++)
