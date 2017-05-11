@@ -13,7 +13,6 @@ using namespace std;
 #ifndef AYA_HEADER_H_
 #define AYA_HEADER_H_
 
-//bool valid(int size, int *start, int *timelength, int **dm, int *index);
-int *all_permutation_search(int size, int *start, int *timelength, int **dm);
+int *all_permutation_search(int size, int *start, int *end, int *timelength, int **distancematrix);
 
 #endif
