@@ -16,14 +16,16 @@ int main()
   cin >> n;	// 入力（頂点数）
 
   
-  int v[n+1], s[n+1], t[n+1], d[n+1][n+1];
+  int v[n+1], s[n+1], t[n+1], e[n+1], d[n+1][n+1];
   cin >> v[0];	// 入力（始点）
   cin >> s[0];	// 開始時刻
   //	s[0] = local -> tm_hour * 60 + local -> tm_min;
+  cin >> e[0];
   cin >> t[0];	// 終了時刻
+
   //	t[0] = 0;
   for(int i = 1; i <= n; i++){
-    cin >> v[i] >> s[i] >> t[i];	// 入力（頂点番号, 到着したい時刻, 費やす時間）
+    cin >> v[i] >> s[i] >> e[i] >> t[i];	// 入力（頂点番号, 到着したい時刻, 費やす時間）
   }
 
   for(int i = 0;i <= n;i++){
@@ -47,9 +49,12 @@ int main()
 	int from = j+1;
 	if(i == 0)from = 0;
 	int to = k+1;
-	int arv = max(s[from], dp[i][j]) + d[from][to];
-	if(from != 0)arv += t[from];
-	if((s[to] == -1 || arv <= s[to]) && arv < dp[i | (1 << k)][k]){
+	int arv = dp[i][j] + d[from][to];
+	if(s[to] != -1 && arv > s[to])continue;
+	arv = max(arv, s[to]);
+	if(e[to] != -1)arv = e[to];
+	else arv += t[to];
+	if(arv < dp[i | (1 << k)][k]){
 	  prev[i | (1<<k)][k] = j;
 	  dp[i | (1<<k)][k] = arv;
 	}
@@ -63,8 +68,7 @@ int main()
       last = j;
     }
   }
-
-  if(dp[(1<<n)-1][last] + t[last] > t[0]){
+  if(dp[(1<<n)-1][last] > e[0]){
     cout << -1 << endl;
     return 0;
   }
@@ -76,10 +80,10 @@ int main()
     ans[i-1] = prev[bitmask][ans[i]];
     bitmask ^= 1<<ans[i];
   }
-  ans[0] = 0;
+  ans[0] = -1;
   cout << n << endl;
   for(int i = 0;i <= n;i++){
-    cout << v[ans[i] + 1] << endl;
+    cout << v[ans[i]+1] << endl;
   }
   return 0;
 }
