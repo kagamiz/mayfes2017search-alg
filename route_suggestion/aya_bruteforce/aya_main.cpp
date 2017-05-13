@@ -17,7 +17,7 @@ int main()
 	int i, j, n, w, x, y, z;
 
 	cin >> n;	// 入力（頂点数）
-
+	
 	int *v = 0;	// 頂点番号の配列
 	int *s = 0;	// 到着したい時刻
 	int *e = 0;	// 企画終了時刻

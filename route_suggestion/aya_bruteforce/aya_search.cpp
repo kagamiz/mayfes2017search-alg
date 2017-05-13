@@ -77,11 +77,16 @@ int *shortageoftime(int size, int *start, int *end, int *timelength, int **dista
 	for (i = 0; i <= size; i++)
 	{
 		d_min_sub = INFINITY;
-		for (j = 0; j <= size; j++)
+		for (j = 0; j < i; j++)
 		{
 			d_ij = distancematrix[i][j];
-			if (d_ij < d_min_sub && d_ij != 0) d_min_sub = d_ij;
+			if (d_ij < d_min_sub) d_min_sub = d_ij;
 		}
+		for (j = i + 1; j <= size; j++)
+		{
+			d_ij = distancematrix[i][j];
+			if (d_ij < d_min_sub) d_min_sub = d_ij;
+		}		
 		d_min[i] = d_min_sub;
 		if (d_min_max < d_min_sub) d_min_max = d_min_sub;
 	}
@@ -98,7 +103,7 @@ int *shortageoftime(int size, int *start, int *end, int *timelength, int **dista
 /* 全順列から重み最小の並びを探す */
 int *all_permutation_search(int size, int *start, int *end, int *timelength, int **distancematrix)
 {
-	int d, i, j, m, min, nowplace, nextplace, nowtime, nexttime, deadline, nextstart;
+	int d, i, j, m, min, nowplace, nextplace, nowtime, nexttime, deadline, nextstart, et, at;
 	min = INFINITY;
 
 	int *index_min = 0;	// 重み最小の順列を保存する配列
@@ -107,12 +112,16 @@ int *all_permutation_search(int size, int *start, int *end, int *timelength, int
 
 	m = 0; // 開始時刻の決まっている企画数
 	for (i = 1; i <= size; i++)
-		{
-			if (start[i] != -1) m++;
-		}
+	{
+		if (start[i] != -1) m++;
+	}
+
 	int *order = 0;
-	order = determined(size, start, m);
-	insertionsort_starttime(order, m, start);
+	if(m > 0)
+	{		
+		order = determined(size, start, m);
+		insertionsort_starttime(order, m, start);
+	}
 
 	int *st = 0;
 	st = shortageoftime(size, start, end, timelength, distancematrix);
@@ -125,19 +134,20 @@ int *all_permutation_search(int size, int *start, int *end, int *timelength, int
 		do
 		{
 			if (st[index[size - 1]] > 0) continue;
-			if (!valid(size, index, m, order)) continue;
+			if (m > 0 && !valid(size, index, m, order)) continue;
 			nowtime = start[0];
 			nowplace = 0;
 			d = 0; // 移動と待ち時間の合計
 			for (i = 0; i < size; i++)
 			{
-				nextplace = index[i];
-				nexttime = nowtime + distancematrix[nowplace][nextplace];
-				deadline = start[nextplace];
-				int et = end[nextplace];
+				nextplace = index[i]; // 行先
+				nexttime = nowtime + distancematrix[nowplace][nextplace]; // 到着時刻
+				nextstart = start[nextplace]; // 行先の開始時刻
+				deadline = nextstart; // 行先に到着していなければならない時刻(1)
+				et = end[nextplace]; // 行先の終了時刻
 				if (et != -1)
 				{
-					int at = et - timelength[nextplace];
+					at = et - timelength[nextplace]; // 行先に到着していなければならない時刻(2)
 					if (deadline == -1 || at < deadline) deadline = at;
 				}
 				if (deadline != -1 && deadline < nexttime) // 全部回れそうか
@@ -145,10 +155,10 @@ int *all_permutation_search(int size, int *start, int *end, int *timelength, int
 					d = INFINITY;
 					break;
 				}
-				nextstart = max(nexttime, deadline);
+				nextstart = max(nexttime, nextstart);
 				d += nextstart - nowtime; // 2頂点間の移動時間と待ち時間を足す
 				nowplace = nextplace;
-				nowtime = max(nexttime, deadline) + timelength[nextplace];
+				nowtime = nextstart + timelength[nextplace];
 			}
 			if (d < min && nowtime <= end[0])
 			{
@@ -159,5 +169,7 @@ int *all_permutation_search(int size, int *start, int *end, int *timelength, int
 		while (next_permutation(index, index + size)); // 次の順列が存在する間繰り返す
 		delete[] index;
 	}
+	delete[] order;
 	return index_min;
 }
+
