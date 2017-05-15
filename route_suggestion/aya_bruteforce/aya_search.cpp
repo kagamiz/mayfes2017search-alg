@@ -9,7 +9,7 @@
 #include <algorithm>
 #include "aya_header.h"
 using namespace std;
-#define INFINITY 99999999
+#define INFINITY (1<<20)
 
 void swap(int *x, int *y)
 {
@@ -103,8 +103,9 @@ int *shortageoftime(int size, int *start, int *end, int *timelength, int **dista
 /* 全順列から重み最小の並びを探す */
 int *all_permutation_search(int size, int *start, int *end, int *timelength, int **distancematrix)
 {
-	int d, i, j, m, min, nowplace, nextplace, nowtime, nexttime, deadline, nextstart, et, at;
-	min = INFINITY;
+	int d, i, j, l, m, nowplace, nextplace, nowtime, nexttime, deadline, nextstart, et, at, l_min, d_sum, d_sum_min;
+	l_min = INFINITY;
+  d_sum_min = INFINITY;
 
 	int *index_min = 0;	// 重み最小の順列を保存する配列
 	index_min = new int[size];
@@ -137,11 +138,14 @@ int *all_permutation_search(int size, int *start, int *end, int *timelength, int
 			if (m > 0 && !valid(size, index, m, order)) continue;
 			nowtime = start[0];
 			nowplace = 0;
-			d = 0; // 移動と待ち時間の合計
+			d_sum = 0; // 移動時間の合計
+			l = 0; // 移動と待ち時間の合計
 			for (i = 0; i < size; i++)
 			{
 				nextplace = index[i]; // 行先
-				nexttime = nowtime + distancematrix[nowplace][nextplace]; // 到着時刻
+				d = distancematrix[nowplace][nextplace];
+				d_sum += d;
+				nexttime = nowtime + d; // 到着時刻
 				nextstart = start[nextplace]; // 行先の開始時刻
 				deadline = nextstart; // 行先に到着していなければならない時刻(1)
 				et = end[nextplace]; // 行先の終了時刻
@@ -152,19 +156,24 @@ int *all_permutation_search(int size, int *start, int *end, int *timelength, int
 				}
 				if (deadline != -1 && deadline < nexttime) // 全部回れそうか
 				{
-					d = INFINITY;
+					l = INFINITY;
+					d_sum = INFINITY;
 					break;
 				}
 				nextstart = max(nexttime, nextstart);
-				d += nextstart - nowtime; // 2頂点間の移動時間と待ち時間を足す
+				l += nextstart - nowtime; // 2頂点間の移動時間と待ち時間を足す
 				nowplace = nextplace;
 				nowtime = nextstart + timelength[nextplace];
 			}
-			if (d < min && nowtime <= end[0])
+			if (nowtime <= end[0] && l <= l_min)
 			{
-				min = d; // 最小値を更新
-				for (j = 0; j < size; j++) index_min[j] = index[j]; // 重み最小の順列を保存
-			}
+			  if(l < l_min || d_sum < d_sum_min)
+			  {
+				  l_min = l; // 最小値を更新
+				  d_sum_min = d_sum;
+				  for (j = 0; j < size; j++) index_min[j] = index[j]; // 重み最小の順列を保存
+			  }
+		  }
 		}
 		while (next_permutation(index, index + size)); // 次の順列が存在する間繰り返す
 		delete[] index;
