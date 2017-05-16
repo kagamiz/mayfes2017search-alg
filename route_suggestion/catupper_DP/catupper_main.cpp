@@ -22,6 +22,7 @@ int calc(int start, int from, int to){//from, toは1-indexed
 //  if(e[to] != -1)now = e[to];//企画の終了時刻があるときの終了時刻
 //  else now += t[to];//企画の終了時刻がないときの終了時刻
   now += t[to];//企画の終了時刻がないときの終了時刻
+  if(e[to] != -1 && now > e[to])return INF;//t[to]分過ごすと、企画の終了時刻を過ぎてしまう。
   return now;
 }
 
