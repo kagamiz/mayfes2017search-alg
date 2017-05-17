@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include <algorithm>
-#include <time.h>
 #include "aya_header.h"
 
 using namespace std;
@@ -17,7 +16,7 @@ int main()
 	int i, j, n, w, x, y, z;
 
 	cin >> n;	// 入力（頂点数）
-	
+
 	int *v = 0;	// 頂点番号の配列
 	int *s = 0;	// 到着したい時刻
 	int *e = 0;	// 企画終了時刻
@@ -34,36 +33,30 @@ int main()
 
 	for(i = 1; i <= n; i++)
 	{
-		cin >> w >> x >> y >> z;	// 入力（頂点番号, 開始時刻, 終了時刻, 費やす時間）
-		v[i] = w;
-		s[i] = x;
-		e[i] = y;
-		t[i] = z;
+		cin >> v[i] >> s[i] >> e[i] >> t[i];	// 入力（頂点番号, 開始時刻, 終了時刻, 費やす時間）
 	}
-
+	
 /* 重み行列 */
 	int **d = 0;
 	d = new int*[n + 1];
 	for(i = 0; i <= n; i++) d[i] = new int[n + 1];
 	for(i = 0; i <= n; i++)
 	{
-		for(j = 0; j <= n; j++)
+		for(j = 0; j <= n; j++) cin >> d[i][j]; // 入力（重み）
+	}
+
+	if(n > 11) cout << -1 << endl;
+	else{
+		int *q = 0; // 重み最小となる頂点の並びを保存する配列
+		q = all_permutation_search(n, s, e, t, d); // 全順列から重み最小の並びを探す
+		if(q[0] == -1) cout << -1 << endl; // 出力（解なしの場合）
+		else
 		{
-			cin >> x; // 入力（重み）
-			d[i][j] = x;
+			cout << n << endl; // 出力（頂点数）
+			for(i = 0; i < n; i++) cout << v[q[i]] << endl; // 出力（頂点番号）
 		}
+		delete[] q;
 	}
-
-	int *q = 0; // 重み最小となる頂点の並びを保存する配列
-	q = all_permutation_search(n, s, e, t, d); // 全順列から重み最小の並びを探す
-	if(q[0] == -1) cout << -1 << endl; // 出力（解なしの場合）
-	else
-	{
-		cout << n << endl; // 出力（頂点数）
-		for(i = 0; i < n; i++) cout << v[q[i]] << endl; // 出力（頂点番号）
-	}
-	delete[] q;
-
 	delete[] v;
 	delete[] s;
 	delete[] e;
