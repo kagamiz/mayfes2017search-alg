@@ -2,7 +2,7 @@
  * search.cpp
  *
  *  Created on: 2017/02/19
- *      Author: Aya
+ *      Author: Aya, catupper
  */
 
 #include <iostream>
@@ -305,12 +305,6 @@ int main()
       ans[0] = -1;
       cout << n << endl;
       for(int i = 1; i <= n; i++) cout << v[ans[i]+1] << endl;
-/*      delete[] v;
-      delete[] s;
-      delete[] e;
-      delete[] t;
-      for(i = 0; i < 20; i++) delete[] d[i];
-      delete[] d;*/
     }
     else cout << -1 << endl;
   }

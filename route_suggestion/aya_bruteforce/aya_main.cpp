@@ -30,11 +30,7 @@ int main()
 	cin >> e[0];	// 帰る時刻
 	cin >> t[0];	// 特に使わない
 
-
-	for(i = 1; i <= n; i++)
-	{
-		cin >> v[i] >> s[i] >> e[i] >> t[i];	// 入力（頂点番号, 開始時刻, 終了時刻, 費やす時間）
-	}
+	for(i = 1; i <= n; i++) cin >> v[i] >> s[i] >> e[i] >> t[i];	// 入力（頂点番号, 開始時刻, 終了時刻, 費やす時間）
 	
 /* 重み行列 */
 	int **d = 0;
@@ -45,18 +41,16 @@ int main()
 		for(j = 0; j <= n; j++) cin >> d[i][j]; // 入力（重み）
 	}
 
-	if(n > 11) cout << -1 << endl;
-	else{
-		int *q = 0; // 重み最小となる頂点の並びを保存する配列
-		q = all_permutation_search(n, s, e, t, d); // 全順列から重み最小の並びを探す
-		if(q[0] == -1) cout << -1 << endl; // 出力（解なしの場合）
-		else
-		{
-			cout << n << endl; // 出力（頂点数）
-			for(i = 0; i < n; i++) cout << v[q[i]] << endl; // 出力（頂点番号）
-		}
-		delete[] q;
+	int *q = 0; // 重み最小となる頂点の並びを保存する配列
+	q = all_permutation_search(n, s, e, t, d); // 全順列から重み最小の並びを探す
+	if(q[0] == -1) cout << -1 << endl; // 出力（解なしの場合）
+	else
+	{
+		cout << n << endl; // 出力（頂点数）
+		for(i = 0; i < n; i++) cout << v[q[i]] << endl; // 出力（頂点番号）
 	}
+	delete[] q;
+
 	delete[] v;
 	delete[] s;
 	delete[] e;
