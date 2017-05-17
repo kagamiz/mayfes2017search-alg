@@ -10,13 +10,25 @@
 #include <time.h>
 #define INF (1<<20)
 using namespace std;
+
+
+int n;
+int v[20], s[20], t[20], e[20], d[20][20];
+
+int calc(int start, int from, int to){//from, toは1-indexed
+  int now = start + d[from][to];//nowはtoに到着する時刻
+  if(s[to] != -1 && now > s[to])return INF;//企画が始まるまでに到着しない
+  if(e[to] != -1 && now > e[to])return INF;//企画が終わるまでに到着しない
+  now = max(now, s[to]);// 企画の開始時刻
+  if(e[to] != -1)now = e[to];//企画の終了時刻があるときの終了時刻
+  else now += t[to];//企画の終了時刻がないときの終了時刻
+  return now;
+}
+
+
 int main()
 {
-  int n;
   cin >> n;	// 入力（頂点数）
-
-  
-  int v[n+1], s[n+1], t[n+1], e[n+1], d[n+1][n+1];
   cin >> v[0];	// 入力（始点）
   cin >> s[0];	// 開始時刻
   //	s[0] = local -> tm_hour * 60 + local -> tm_min;
@@ -41,22 +53,18 @@ int main()
     }
   }
   dp[0][0] = s[0];
-  for(int i = 0;i < (1 << n);i++){
-    for(int j = 0;j < n;j++){
+  for(int i = 0;i < (1 << n);i++){ // 訪れた頂点(0-index)
+    for(int j = 0;j < n;j++){ // 今いる頂点(0-index)
       if(dp[i][j] == INF)continue;
-      for(int k = 0;k < n;k++){
+      for(int k = 0;k < n;k++){ // 次の頂点
 	if(i & (1 << k))continue;
-	int from = j+1;
+	int from = j + 1;//1-indexedになおす
+	int to = k + 1;//なおす
 	if(i == 0)from = 0;
-	int to = k+1;
-	int arv = dp[i][j] + d[from][to];
-	if(s[to] != -1 && arv > s[to])continue;
-	arv = max(arv, s[to]);
-	if(e[to] != -1)arv = e[to];
-	else arv += t[to];
-	if(arv < dp[i | (1 << k)][k]){
-	  prev[i | (1<<k)][k] = j;
-	  dp[i | (1<<k)][k] = arv;
+	int tmp = calc(dp[i][j], from, to);//時刻dp[i][j]にjを出発してkに行ったあとに、kを出発する時間
+	if(tmp < dp[i | (1 << k)][k]){//改善されるなら更新
+	  prev[i | (1 << k)][k] = j;
+	  dp[i | (1 << k)][k] = tmp;
 	}
       }
     }
