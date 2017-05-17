@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include <algorithm>
-#include <time.h>
 #define INF (1<<20)
 using namespace std;
 
@@ -20,8 +19,10 @@ int calc(int start, int from, int to){//from, toは1-indexed
   if(s[to] != -1 && now > s[to])return INF;//企画が始まるまでに到着しない
   if(e[to] != -1 && now > e[to])return INF;//企画が終わるまでに到着しない
   now = max(now, s[to]);// 企画の開始時刻
-  if(e[to] != -1)now = e[to];//企画の終了時刻があるときの終了時刻
-  else now += t[to];//企画の終了時刻がないときの終了時刻
+//  if(e[to] != -1)now = e[to];//企画の終了時刻があるときの終了時刻
+//  else now += t[to];//企画の終了時刻がないときの終了時刻
+  now += t[to];//企画の終了時刻がないときの終了時刻
+  if(e[to] != -1 && now > e[to])return INF;//t[to]分過ごすと、企画の終了時刻を過ぎてしまう。
   return now;
 }
 
@@ -31,11 +32,9 @@ int main()
   cin >> n;	// 入力（頂点数）
   cin >> v[0];	// 入力（始点）
   cin >> s[0];	// 開始時刻
-  //	s[0] = local -> tm_hour * 60 + local -> tm_min;
-  cin >> e[0];
-  cin >> t[0];	// 終了時刻
+  cin >> e[0];	// 終了時刻
+  cin >> t[0];
 
-  //	t[0] = 0;
   for(int i = 1; i <= n; i++){
     cin >> v[i] >> s[i] >> e[i] >> t[i];	// 入力（頂点番号, 到着したい時刻, 費やす時間）
   }
@@ -90,7 +89,8 @@ int main()
   }
   ans[0] = -1;
   cout << n << endl;
-  for(int i = 0;i <= n;i++){
+  for(int i = 1; i <= n; i++){
+//  for(int i = 0; i <= n; i++){ //v[0]は不要
     cout << v[ans[i]+1] << endl;
   }
   return 0;
