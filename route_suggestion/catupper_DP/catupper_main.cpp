@@ -66,11 +66,9 @@ int main()
     }
   }
   dp[0][0] = s[0];
-  int lastok = 0;
   for(int i = 0;i < (1 << n);i++){ // 訪れた頂点(0-index)
     for(int j = 0;j < n;j++){ // 今いる頂点(0-index)
       if(dp[i][j] == INF)continue;
-      lastok = i;
       for(int k = 0;k < n;k++){ // 次の頂点
 	if(i & (1 << k))continue;
 	int from = j + 1;//1-indexedになおす
@@ -90,7 +88,6 @@ int main()
       last = j;
     }
   }
-  cout << dp[(1<<n)-1][last] << " "<< e[0] << endl;
   if(dp[(1<<n)-1][last] > e[0]){
     cout << -1 << endl;
     return 0;
