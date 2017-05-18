@@ -255,7 +255,7 @@ int main()
   }
   else
   {
-    if(n < 16) // 入力が多ければDP
+    if(n < 20) // 入力が多ければDP
     {
       int v[20], s[20], t[20], e[20], d[20][20];
       int **dp, **prev;
