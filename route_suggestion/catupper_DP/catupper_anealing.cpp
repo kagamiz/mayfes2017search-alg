@@ -1,5 +1,5 @@
 /*
- * catupper_main.cpp
+ * catupper_anealing.cpp
  *
  *  Created on: 2017/05/11
  *      Author: catupper
@@ -12,7 +12,7 @@ using namespace std;
 
 
 int n;
-int v[25], s[25], t[25], e[25], d[25][25];
+int v[20], s[20], t[20], e[20], d[20][20];
 int **dp, **prev;
 
 int **array_malloc(int a, int b){
