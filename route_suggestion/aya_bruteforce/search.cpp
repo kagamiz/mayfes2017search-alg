@@ -194,11 +194,11 @@ void array_free(int **x, int a, int b){
   free(x);
 }
 
-int calc(int start, int from, int to, int s[20], int e[20], int t[20], int d[20][20]){//from, toは1-indexed
+int calc(int start, int from, int to, int s[25], int e[25], int t[25], int d[25][25]){//from, toは1-indexed
   int now = start + d[from][to];//nowはtoに到着する時刻
   if(s[to] != -1 && now > s[to])return INF;//企画が始まるまでに到着しない
   if(e[to] != -1 && now > e[to])return INF;//企画が終わるまでに到着しない
-  now = max(now, s[to]);// 企画の開始時刻
+  now = max(now, s[to]);// 企画の開始時刻  
   now += t[to];//企画の終了時刻がないときの終了時刻
   if(e[to] != -1 && now > e[to])return INF;//t[to]分過ごすと、企画の終了時刻を過ぎてしまう。
   return now;
@@ -255,9 +255,9 @@ int main()
   }
   else
   {
-    if(n < 20) // 入力が多ければDP
+    if(n < 21) // 入力が多ければDP
     {
-      int v[20], s[20], t[20], e[20], d[20][20];
+      int v[25], s[25], t[25], e[25], d[25][25];
       int **dp, **prev;
       cin >> v[0];
       cin >> s[0];
@@ -266,7 +266,7 @@ int main()
       dp = array_malloc(1<<n, n);
       prev = array_malloc(1<<n, n);
       for(int i = 1; i <= n; i++){
-        cin >> v[i] >> s[i] >> e[i] >> t[i];
+        cin >> v[i] >> s[i] >> e[i] >> t[i];	// 入力（頂点番号, 到着したい時刻, 費やす時間）
       }
 
       for(int i = 0;i <= n;i++){
@@ -297,7 +297,6 @@ int main()
           }
         }
       }
-
       int last = 0;
       for(int j = 0;j < n;j++){
         if(dp[(1<<n)-1][j] < dp[(1<<n)-1][last]){
@@ -318,7 +317,10 @@ int main()
       }
       ans[0] = -1;
       cout << n << endl;
-      for(int i = 1; i <= n; i++) cout << v[ans[i]+1] << endl;
+      for(int i = 1; i <= n; i++){
+        cout << v[ans[i]+1] << endl;
+      }
+
       array_free(dp, 1<<n, n);
       array_free(prev, 1<<n, n);
     }
