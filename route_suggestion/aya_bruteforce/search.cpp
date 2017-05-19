@@ -1,7 +1,7 @@
 ﻿/*
  * search.cpp
  *
- *  Created on: 2017/02/19
+ *  Created on: 2017/05/17
  *      Author: Aya, catupper
  */
 
@@ -181,6 +181,19 @@ int *all_permutation_search(int size, int *start, int *end, int *timelength, int
   return index_min;
 }
 
+int **array_malloc(int a, int b){
+  int **x;
+  x = (int**)malloc(sizeof(int*)*a);
+  for(int i = 0;i < a;i++)
+    x[i] = (int*)malloc(sizeof(int)*b);
+  return x;
+}
+
+void array_free(int **x, int a, int b){
+  for(int i = 0;i < a;i++)free(x[i]);
+  free(x);
+}
+
 int calc(int start, int from, int to, int s[20], int e[20], int t[20], int d[20][20]){//from, toは1-indexed
   int now = start + d[from][to];//nowはtoに到着する時刻
   if(s[to] != -1 && now > s[to])return INF;//企画が始まるまでに到着しない
@@ -242,14 +255,16 @@ int main()
   }
   else
   {
-    if(n < 15) // 入力が多ければDP
+    if(n < 20) // 入力が多ければDP
     {
       int v[20], s[20], t[20], e[20], d[20][20];
+      int **dp, **prev;
       cin >> v[0];
       cin >> s[0];
       cin >> e[0];
       cin >> t[0];
-
+      dp = array_malloc(1<<n, n);
+      prev = array_malloc(1<<n, n);
       for(int i = 1; i <= n; i++){
         cin >> v[i] >> s[i] >> e[i] >> t[i];
       }
@@ -260,7 +275,6 @@ int main()
         }
       }
 
-      int dp[1<<n][n], prev[1<<n][n];
       for(int i = 0;i < n;i++){
         for(int j = 0;j < (1 << n);j++){
           dp[j][i] = INF;
@@ -305,6 +319,8 @@ int main()
       ans[0] = -1;
       cout << n << endl;
       for(int i = 1; i <= n; i++) cout << v[ans[i]+1] << endl;
+      array_free(dp, 1<<n, n);
+      array_free(prev, 1<<n, n);
     }
     else cout << -1 << endl;
   }
