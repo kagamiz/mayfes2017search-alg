@@ -112,6 +112,9 @@ int main(){
   for(int i = 0;i <= n;i++){
     cin >> id[i] >> open[i] >> start[i] >> end[i] >> stay[i];
   }
+  for(int i = 0;i <= n;i++)
+    for(int j = 0;j <= n;j++)
+      cin >> d[i][j];
   if(n <= 10)bf();
   else bitDP();
   return 0;
